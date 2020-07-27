@@ -13,21 +13,30 @@ const Wrapper = styled.div`
     max-height: 512px;
     overflow: scroll;
 `
-/*
-interface IPlanetsListProps {
-}
-*/
+const Input = styled.input`
+    width: 100%;
+    box-sizing: border-box;
+    height: 40px;
+    border: 1px solid #001E62;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    outline: none;
+`
 
 const PlanetsList = () => {
     const { planets, selectedPlanets } = usePlanets()
+    const [search, setSearch] = React.useState("")
+
+    const onSearchChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value), [])
 
     const isSelected = React.useCallback((planet: IPlanet) => Boolean(selectedPlanets.find(actualPlanet => comparePlanet(actualPlanet, planet))), [selectedPlanets])
 
-    console.log(selectedPlanets, "selectedPlanets")
+    const filteredPlanets = React.useMemo(() => planets.filter(planet => planet.name.match(new RegExp(search, 'gi'))), [search, planets])
 
     return (
         <Wrapper>
-            {planets.map(planet => <PlanetsListItem key={planet.name} planet={planet} isSelected={isSelected(planet)} />)}
+            <Input placeholder="Search planet" value={search} onChange={onSearchChange} />
+            {filteredPlanets.map(planet => <PlanetsListItem key={planet.name} planet={planet} isSelected={isSelected(planet)} />)}
         </Wrapper>
     )
 }

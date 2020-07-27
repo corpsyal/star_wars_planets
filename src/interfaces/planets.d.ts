@@ -25,5 +25,7 @@ interface IPlanetResponse {
 
 interface IPlanetContext {
     planets: IPlanet[]
+    selectedPlanets: IPlanet[]
+    onSelect: (planet: IPlanet) => void
     loading: boolean
 }

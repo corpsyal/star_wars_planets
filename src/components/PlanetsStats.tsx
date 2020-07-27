@@ -2,6 +2,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 import { Radar } from 'react-chartjs-2';
 import usePlanets from '../hooks/usePlanets';
+import { lightenDarkenColor } from '../utils/color';
 
 const getRandomColor = (str: string) => {
     var hash = 0;
@@ -24,12 +25,22 @@ const Wrapper = styled.div`
     align-items: center;
 `
 
-const labels = ['Rotation period', 'Orbital period', 'Diameter', 'Gravity', 'Surface water', 'Population']
-const getData = ({rotation_period, orbital_period, diameter, gravity, surface_water, population}: IPlanet) =>
-    [rotation_period, orbital_period, diameter, gravity, surface_water, population].map(value => parseInt(value, 10) || null)
+const setScale = (value: string) => (divideBy: number = 1) : string => (parseFloat(value)/divideBy || 0).toString()
+
+const labels = ['Population (millions)','Rotation period', 'Orbital period x100', 'Diameter x100', 'Gravity', 'Surface water']
+const getData = ({population, rotation_period, orbital_period, diameter, gravity, surface_water}: IPlanet) =>
+    [
+        setScale(population)(1000000),
+        rotation_period,
+        setScale(orbital_period)(100),
+        setScale(diameter)(100),
+        gravity,
+        surface_water
+    ].map(value => parseFloat(value) || 0)
 
 const PlanetsStats = () => {
     const { selectedPlanets } = usePlanets()
+    
     const data = React.useMemo(() => ({
         labels,
         datasets: selectedPlanets.map(planet => {
@@ -37,9 +48,9 @@ const PlanetsStats = () => {
             const color = getRandomColor(name)
             return {
                 label: name,
-                backgroundColor: color,
+                backgroundColor: lightenDarkenColor(color, 40),
                 borderColor: color,
-                pointBackgroundColor: color,
+                pointBackgroundColor: lightenDarkenColor(color, 40),
                 pointBorderColor: '#fff',
                 pointHoverBackgroundColor: '#fff',
                 pointHoverBorderColor: color,
@@ -50,7 +61,7 @@ const PlanetsStats = () => {
 
     return (
         <Wrapper>
-            {data?.datasets?.length ? <Radar data={data} redraw /> : <span>No planet selected</span>}
+            {data?.datasets?.length ? <Radar data={data} /> : <span>No planet selected</span>}
         </Wrapper>
     )
 }

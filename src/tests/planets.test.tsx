@@ -7,6 +7,11 @@ import { act, render } from '@testing-library/react'
 // @ts-ignore: no typescript definition
 import { screen } from '@testing-library/dom'
 import { fetchPlanetsByUrl, fetchAllPlanets, fetchPlanetsByName, getSearchUrl } from "../services/planets"
+import axios from 'axios'
+// @ts-ignore: no typescript definition
+import axiosHttpAdapter from 'axios/lib/adapters/http'
+
+axios.defaults.adapter = axiosHttpAdapter
 
 describe('Planets services', () => {
     

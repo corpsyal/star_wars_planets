@@ -1,10 +1,14 @@
-/**
- * @jest-environment node
- */
 
- import { fetchPlanetsByUrl, fetchAllPlanets, fetchPlanetsByName, getSearchUrl } from "../services/planets"
 
-describe('Planets', () => {
+import React from 'react'
+import usePlanets from "../hooks/usePlanets"
+import { PlanetsProvider } from '../contexts/planets'
+import { act, render } from '@testing-library/react'
+// @ts-ignore: no typescript definition
+import { screen } from '@testing-library/dom'
+import { fetchPlanetsByUrl, fetchAllPlanets, fetchPlanetsByName, getSearchUrl } from "../services/planets"
+
+describe('Planets services', () => {
     
     it('Should fetch planets page 1', async done => {
         const planetsResponse = await fetchPlanetsByUrl()
@@ -52,3 +56,26 @@ describe('Planets', () => {
         done()        
     })
 }) 
+
+
+describe('Planets context', () => {
+    it('Should render planets context with good value', async done => {
+        const PlanetsContextConsumer = () => {
+          const { planets } = usePlanets()
+          return <span>Received: {planets.length}</span>
+        }
+    
+        const tree = (
+          <PlanetsProvider>
+            <PlanetsContextConsumer />
+          </PlanetsProvider>
+        )
+    
+        act(() => {
+          render(tree)
+        })
+    
+        await screen.findByText(`Received: 60`)
+        done()
+      })
+})

@@ -1,6 +1,10 @@
 import axios from 'axios'
 import queryString from 'query-string'
 import { BASE_URL } from '../constants/planets'
+// @ts-ignore: no typescript definition
+import axiosHttpAdapter from 'axios/lib/adapters/http'
+
+axios.defaults.adapter = axiosHttpAdapter
 
 export const fetchPlanetsByUrl = async (url: string = BASE_URL): Promise<IPlanetResponse> => {
     const { data } = await axios.get(url)

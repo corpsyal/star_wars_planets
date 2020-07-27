@@ -22,3 +22,8 @@ interface IPlanetResponse {
     previous?: string
     results: IPlanet[]
 }
+
+interface IPlanetContext {
+    planets: IPlanet[]
+    loading: boolean
+}
